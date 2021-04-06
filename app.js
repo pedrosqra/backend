@@ -3,9 +3,6 @@ const mongoose = require("mongoose");
 const app = express();
 require("dotenv/config");
 
-//Tasks route
-const tasksRoute = require("./routes/tasks");
-
 //Auth route
 const authRoute = require("./routes/auth");
 
@@ -18,7 +15,6 @@ mongoose.connect(
 
 //Middlewares
 app.use(express.json());
-app.use("/tasks", tasksRoute);
 app.use("/", authRoute);
 
 //Choosing a port to listen to
