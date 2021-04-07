@@ -1,21 +1,16 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const app = express();
+const database = require("./config/database");
 require("dotenv/config");
 
-//Auth route
-const authRoute = require("./routes/auth");
-
-//Connecting to database
-mongoose.connect(
-  process.env.DB_CONNECTION,
-  { useNewUrlParser: true, useUnifiedTopology: true },
-  () => console.log("connected to database")
-);
+//Routes
+const routes = require("./routes/routes");
 
 //Middlewares
 app.use(express.json());
-app.use("/", authRoute);
+app.use("/", routes);
 
 //Choosing a port to listen to
 app.listen(3333);
+
+module.exports = app;
