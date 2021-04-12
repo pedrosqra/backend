@@ -4,11 +4,12 @@ module.exports = function (req, res, next) {
   const token = req.header("auth");
   if (!token) return res.status(401).send("Access denied");
 
-  try {
-    const verified = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = verified;
+  jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
+    if (err) {
+      return res.status(400).send("Error");
+    }
+
+    req.userId = decoded._id;
     next();
-  } catch (err) {
-    res.status(400).send("Invalid token");
-  }
+  });
 };

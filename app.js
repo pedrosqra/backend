@@ -8,9 +8,6 @@ const routes = require("./routes/routes");
 
 //Middlewares
 app.use(express.json());
-app.use("/", routes);
-
-//Choosing a port to listen to
-app.listen(3333);
+app.use(routes);
 
 module.exports = app;
