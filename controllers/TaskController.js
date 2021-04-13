@@ -1,88 +1,101 @@
-const Task = require("../models/task");
+const Task = require("../models/Task");
+const User = require("../models/User");
 
 module.exports = {
   async createTask(req, res) {
-    const { name, priority, description } = req.body;
-    let task = await Task.findOne({ name, description });
-    if (task) return res.status(400).send("Essa task já existe.");
-
     try {
-      if (!task) {
-        task = await Task.create({
-          name,
-          priority,
-          description,
-        });
-        return res.status(200).send("ok");
-      }
-    } catch (err) {
-      console.log(err);
-      return res.status(400).send("Algum campo está inválido.");
+      const user = await User.findById(req.userId);
+      const task = await Task.create({ ...req.body, user: req.userId });
+      user.tasks.push(task);
+      await user.save();
+      return res.send(task);
+    } catch (error) {
+      return res
+        .status(400)
+        .send("Erro na criação, confira se preencheu os dados corretamente");
     }
-    return res.status(400).send("Algum campo está inválido.");
   },
 
   async listTasks(req, res) {
     try {
-      const tasks = await Task.find();
-      return res.json(tasks);
+      const user = await User.findById(req.userId);
+      return res.send(user.tasks);
     } catch (error) {
-      return res.status(400).send("Não há tarefa cadastrada");
+      return res.status(400).send(error);
     }
   },
 
   async sortTasks(req, res) {
     try {
-      const tasks = await Task.find();
-      tasks.sort((a, b) => {
-        if (a < b) {
-          return -1;
-        } else if (a > b) {
+      const user = await User.findById(req.userId);
+      user.tasks.sort((a, b) => {
+        if (JSON.stringify(a)[13] > JSON.stringify(b)[13]) {
           return 1;
+        } else if (JSON.stringify(a)[13] < JSON.stringify(b)[13]) {
+          return -1;
         }
         return 0;
       });
-      return res.json(tasks);
+      return res.send(user.tasks);
     } catch (error) {
-      return res.status(400).send("Não há tarefa cadastrada");
+      return res.status(400).send(error);
     }
   },
 
   async updateTask(req, res) {
     try {
-      if (req.body.priority == "baixa" || req.body.priority == "alta") {
-        const updatedTask = await Task.updateOne(
-          { _id: req.params.taskId },
+      const user = await User.findById(req.userId);
+      const { name, priority, description } = req.body;
+      if (priority === "alta" || priority === "baixa") {
+        const taskUpdated = await Task.findByIdAndUpdate(
+          req.params.taskId,
           {
-            $set: {
-              name: req.body.name,
-              priority: req.body.priority,
-              description: req.body.description,
-            },
+            name,
+            priority,
+            description,
+          },
+          { new: true }
+        );
+        user.tasks.forEach((task) => {
+          if (task._id == req.params.taskId) {
+            let index = user.tasks.indexOf(task);
+            user.tasks.splice(index, 1);
           }
-        );
-        return res.status(200).send("ok");
+        });
+        user.tasks.push(taskUpdated);
+        await user.save();
+
+        return res.send(user.tasks);
       }
-      return res
-        .status(400)
-        .send(
-          'O campo de prioridade está com valores inválidos. Tente "sem prioridade", "baixa", "media" ou "alta". '
-        );
-    } catch (err) {
-      return res.status(400).send(err);
+    } catch (error) {
+      console.log(error);
+      return res.status(400).send(error);
     }
   },
 
   async deleteTask(req, res) {
-    const task = await Task.findById({ _id: req.params.taskId });
-    if (!task) {
-      return res.status(400).send("Esta tarefa não existe no banco de dados.");
-    }
     try {
-      const task = await Task.deleteOne({ _id: req.params.taskId });
-      return res.status(200).send("Deletado com sucesso");
+      const user = await User.findById(req.userId);
+      user.tasks.forEach((task) => {
+        if (task._id == req.params.taskId) {
+          let index = user.tasks.indexOf(task);
+          user.tasks.splice(index, 1);
+        }
+      });
+      const taskToDelete = await Task.deleteOne({ _id: req.params.taskId });
+      await user.save();
+      return res.send(user.tasks);
     } catch (error) {
-      return res.status(400).send("Não foi possível deletar a tarefa.");
+      console.log(error);
+      return res.status(400).send("Erro ao deletar a tarefa");
     }
+  },
+
+  async deleteData(req, res) {
+    await Task.deleteMany();
+    const user = await User.findById(req.userId);
+    user.tasks.splice(0, user.tasks.length);
+    await user.save();
+    return res.status(200).send("Deletado com sucesso");
   },
 };

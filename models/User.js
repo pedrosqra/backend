@@ -16,6 +16,10 @@ const UserSchema = mongoose.Schema(
       required: true,
       min: 8,
     },
+    tasks: {
+      type: Array,
+      default: [],
+    },
   },
   {
     timestamps: true,
