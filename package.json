@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon start.js",
+    "start": "node start.js",
+    "start_dev": "nodemon start.js",
     "test": "cross-env NODE_ENV=test jest --runInBand --env=node"
   },
   "license": "MIT",
