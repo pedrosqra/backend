@@ -32,4 +32,13 @@ describe("insert", () => {
     expect(res.status).toEqual(200);
     expect(res.body).toHaveProperty("token");
   });
+
+  it("should log an user and receive a token", async () => {
+    const res = await request.post("/login").send({
+      email: "euimplro@pfvr.com",
+      password: "genteplmdds",
+    });
+    expect(res.status).toEqual(200);
+    expect(res.body).toHaveProperty("token");
+  });
 });

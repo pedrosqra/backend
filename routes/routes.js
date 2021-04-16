@@ -11,6 +11,7 @@ router.get("/tasks/sorted", tokenAuth, TaskController.sortTasks);
 router.delete("/task/:taskId", tokenAuth, TaskController.deleteTask);
 //User auth routes
 router.post("/register", AuthController.createUser);
+router.delete("/delete", tokenAuth, AuthController.deleteUser);
 router.post("/login", AuthController.logUser);
 
 module.exports = router;

@@ -2,6 +2,7 @@ const { register, login } = require("../validation/validation");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
+const Task = require("../models/Task");
 
 module.exports = {
   //USER REGISTRATION
@@ -34,6 +35,30 @@ module.exports = {
     } catch (err) {
       res.status(400).send({ error: err });
     }
+  },
+
+  //USER DELETION
+  async deleteUser(req, res) {
+    //Validation
+    const { error } = login.validate(req.body);
+    if (error) return res.status(400).send(error.details[0].message);
+
+    //Get user data
+    const { email, password } = req.body;
+
+    //Check if user already exists
+    const user = await User.findOne({ email: email });
+    if (!user) return res.status(400).send("User does not exist");
+
+    //Password verification
+    const validPassword = await bcrypt.compare(password, user.password);
+    if (!validPassword)
+      return res.status(400).send("Invalid email or password");
+
+    //Create and assign a token
+    const tasksDelete = await Task.deleteMany({ user: user._id });
+    const deleted = await User.deleteOne({ email: email });
+    return res.status(200).send({ success: "Account deleted." });
   },
 
   //LOG IN
