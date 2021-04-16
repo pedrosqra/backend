@@ -13,5 +13,6 @@ router.delete("/task/:taskId", tokenAuth, TaskController.deleteTask);
 router.post("/register", AuthController.createUser);
 router.delete("/delete", tokenAuth, AuthController.deleteUser);
 router.post("/login", AuthController.logUser);
+router.put("/logout", tokenAuth, AuthController.logoutUser);
 
 module.exports = router;
