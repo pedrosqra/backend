@@ -32,7 +32,6 @@ module.exports = {
       const savedUser = await user.save();
       res.status(200).send({ user: user.id });
     } catch (err) {
-      console.log(err)
       res.status(400).send(err);
     }
   },

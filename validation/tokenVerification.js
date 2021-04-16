@@ -12,7 +12,6 @@ module.exports = function (req, res, next) {
   }
 
   const [scheme, token] = parts;
-  console.log(scheme);
 
   if (!/^Bearer$/i.test(scheme)) {
     return res.status(401).send({ error: "Malformed token." });

@@ -6,8 +6,7 @@ const config = process.env.NODE_ENV === 'test'? configuration.database.test: con
 
 //Connecting to database
 mongoose.connect(
-  // `${config}`,
-  process.env.DB_TEST,
+  config,
   { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false },
   () => console.log("connected to database")
 );

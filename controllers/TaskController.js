@@ -9,11 +9,7 @@ module.exports = {
       const task = await Task.create({ ...req.body, user: req.userId });
       user.tasks.push(task);
       await user.save();
-      return res.send({
-        name: req.body.name,
-        priority: req.body.priority,
-        description: req.body.description,
-      });
+      return res.send(task);
     } catch (error) {
       return res
         .status(400)
@@ -26,7 +22,7 @@ module.exports = {
       const user = await User.findById(req.userId);
       return res.send(user.tasks);
     } catch (error) {
-      return res.status(400).send(error);
+      return res.status(400).send("O usuário não possui tarefas cadastradas.");
     }
   },
   //Ordenar listas pela prioridade
@@ -43,7 +39,7 @@ module.exports = {
       });
       return res.send(user.tasks);
     } catch (error) {
-      return res.status(400).send(error);
+      return res.status(400).send("O usuário não possui tarefas cadastradas.");
     }
   },
   //Editar tarefa
@@ -51,7 +47,7 @@ module.exports = {
     try {
       const user = await User.findById(req.userId);
       const { name, priority, description } = req.body;
-      if (priority === "alta" || priority === "baixa") {
+      if (name !== null && name !== "" && priority === "alta" || name !== null && name !== "" && priority === "baixa") {
         const taskUpdated = await Task.findByIdAndUpdate(
           req.params.taskId,
           {
@@ -72,9 +68,9 @@ module.exports = {
 
         return res.send(user.tasks);
       }
+      return res.status(400).send("Campos inválidos checar se preencheu corretamente.")
     } catch (error) {
-      console.log(error);
-      return res.status(400).send(error);
+      return res.status(400).send("Campos inválidos checar se preencheu corretamente.");
     }
   },
   //Deletar tarefa
@@ -92,20 +88,11 @@ module.exports = {
       if (flag) {
         const taskToDelete = await Task.deleteOne({ _id: req.params.taskId });
         await user.save();
-        return res.send(user.tasks);
+        return res.status(200).send(user.tasks);
       }
       return res.status(400).send("Tarefa não encontrada.");
     } catch (error) {
-      console.log(error);
       return res.status(400).send("Erro ao deletar a tarefa.");
     }
-  },
-  // Deletar todas as tarefas e limpar lista de tarefas do usuário.
-  // async deleteData(req, res) {
-  //   await Task.deleteMany();
-  //   const user = await User.findById(req.userId);
-  //   user.tasks.splice(0, user.tasks.length);
-  //   await user.save();
-  //   return res.status(200).send("Deletado com sucesso");
-  // },
+  }
 };
