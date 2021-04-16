@@ -155,6 +155,13 @@ describe("insert", () => {
     ]);
   });
 
+  it("delete task", async () => {
+    const res_delete_task = await request
+      .delete("/task/" + taskId)
+      .set("auth", token);
+    expect(res_delete_task.status).toEqual(200);
+  });
+
   it("update task", async () => {
     const res_update_task = await request
       .put("/task/" + taskId)
