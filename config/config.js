@@ -1,5 +1,3 @@
-require("dotenv/config");
-
 module.exports = {
   database: {
     base: process.env.DB_CONNECTION,
