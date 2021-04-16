@@ -7,6 +7,7 @@ module.exports = {
   //USER REGISTRATION
   async createUser(req, res) {
     //Validation
+    try {
     const { error } = register.validate(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -26,11 +27,12 @@ module.exports = {
       nickname,
       email,
       password: hashedPassword,
+      tasks: [],
     });
-    try {
       const savedUser = await user.save();
       res.status(200).send({ user: user.id });
     } catch (err) {
+      console.log(err)
       res.status(400).send(err);
     }
   },
@@ -55,6 +57,6 @@ module.exports = {
 
     //Create and assign a token
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
-    res.header("auth", token).send(token);
+    res.header("auth", token).send({token: token});
   },
 };
