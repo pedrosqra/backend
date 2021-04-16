@@ -8,7 +8,7 @@ module.exports = function (req, res, next) {
   }
 
   if (loggedOut.includes(authHeader)) {
-    returnres.status(400).send({ error: "Usuário realizou log out" });
+    return res.status(400).send({ error: "Usuário realizou log out" });
   }
 
   const parts = authHeader.split(" ");
