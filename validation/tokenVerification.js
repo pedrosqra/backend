@@ -1,9 +1,15 @@
 const jwt = require("jsonwebtoken");
+const { loggedOut } = require("../controllers/AuthController");
 
 module.exports = function (req, res, next) {
   const authHeader = req.headers.auth;
-  if (!authHeader)
+  if (!authHeader) {
     return res.status(401).send({ error: "Access denied. No token provided" });
+  }
+
+  if (loggedOut.includes(authHeader)) {
+    returnres.status(400).send({ error: "Usuário realizou log out" });
+  }
 
   const parts = authHeader.split(" ");
 
@@ -18,7 +24,9 @@ module.exports = function (req, res, next) {
   }
 
   jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
-    if (err) return res.status(400).send("Error");
+    if (err) {
+      return res.status(400).send("Error");
+    }
 
     req.userId = decoded._id;
     next();

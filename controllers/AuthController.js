@@ -4,10 +4,10 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 const Task = require("../models/Task");
 
-var out = [];
+var loggedOut = [];
 
 module.exports = {
-  out,
+  loggedOut,
   //USER REGISTRATION
   async createUser(req, res) {
     //Validation
@@ -88,7 +88,7 @@ module.exports = {
   async logoutUser(req, res) {
     const token = req.headers.auth;
 
-    out.push(token);
+    loggedOut.push(token);
 
     return res.send({ success: "Log out completo." });
   },
