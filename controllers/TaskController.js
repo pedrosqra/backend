@@ -13,7 +13,7 @@ module.exports = {
     } catch (error) {
       return res
         .status(400)
-        .send("Erro na criação, confira se preencheu os dados corretamente");
+        .send("Erro na criação, confira se preencheu os dados corretamente.");
     }
   },
   //Listar tarefas
@@ -76,11 +76,11 @@ module.exports = {
       }
       return res
         .status(400)
-        .send("Campos inválidos checar se preencheu corretamente.");
+        .send("Campos inválidos, confira se preencheu os dados corretamente.");
     } catch (error) {
       return res
         .status(400)
-        .send("Campos inválidos checar se preencheu corretamente.");
+        .send("Campos inválidos, confira se preencheu os dados corretamente.");
     }
   },
   //Deletar tarefa

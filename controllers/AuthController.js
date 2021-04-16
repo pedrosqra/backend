@@ -4,7 +4,10 @@ const bcrypt = require("bcryptjs");
 const User = require("../models/User");
 const Task = require("../models/Task");
 
+var out = [];
+
 module.exports = {
+  out,
   //USER REGISTRATION
   async createUser(req, res) {
     //Validation
@@ -48,17 +51,16 @@ module.exports = {
 
     //Check if user already exists
     const user = await User.findOne({ email: email });
-    if (!user) return res.status(400).send("User does not exist");
+    if (!user) return res.status(400).send("Usuário não existe.");
 
     //Password verification
     const validPassword = await bcrypt.compare(password, user.password);
-    if (!validPassword)
-      return res.status(400).send("Invalid email or password");
+    if (!validPassword) return res.status(400).send("Email ou senha inválida.");
 
     //Create and assign a token
     const tasksDelete = await Task.deleteMany({ user: user._id });
     const deleted = await User.deleteOne({ email: email });
-    return res.status(200).send({ success: "Account deleted." });
+    return res.status(200).send({ success: "Conta deletada com sucesso." });
   },
 
   //LOG IN
@@ -72,15 +74,22 @@ module.exports = {
 
     //Check if user already exists
     const user = await User.findOne({ email: email });
-    if (!user) return res.status(400).send("User does not exist");
+    if (!user) return res.status(400).send("Usuário não existe.");
 
     //Password verification
     const validPassword = await bcrypt.compare(password, user.password);
-    if (!validPassword)
-      return res.status(400).send("Invalid email or password");
+    if (!validPassword) return res.status(400).send("Email ou senha inválida.");
 
     //Create and assign a token
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
     res.header("auth", token).send({ token: token });
+  },
+
+  async logoutUser(req, res) {
+    const token = req.header.auth;
+
+    out.push(token);
+
+    return res.send({ success: "Log out completo." });
   },
 };
