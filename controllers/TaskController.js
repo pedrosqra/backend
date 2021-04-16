@@ -20,6 +20,7 @@ module.exports = {
   async listTasks(req, res) {
     try {
       const user = await User.findById(req.userId);
+      if (!user) return res.status(400).send({ error: "Usuário não existe." });
       return res.send(user.tasks);
     } catch (error) {
       return res.status(400).send("O usuário não possui tarefas cadastradas.");
@@ -29,6 +30,8 @@ module.exports = {
   async sortTasks(req, res) {
     try {
       const user = await User.findById(req.userId);
+      if (!user) return res.status(400).send({ error: "Usuário não existe." });
+
       user.tasks.sort((a, b) => {
         if (JSON.stringify(a)[13] > JSON.stringify(b)[13]) {
           return 1;
