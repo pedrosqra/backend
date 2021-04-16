@@ -9,7 +9,7 @@ const config =
 
 //Connecting to database
 mongoose.connect(
-  "mongodb+srv://codex:trainee@cluster0.sxnno.mongodb.net/codexDB?retryWrites=true&w=majority",
+  config,
   { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false },
   () => console.log("connected to database")
 );
