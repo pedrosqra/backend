@@ -9,7 +9,7 @@ const config =
 
 //Connecting to database
 mongoose.connect(
-  `${config}`,
+  `${process.env.DB_CONNECTION}`,
   { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false },
   () => console.log("connected to database")
 );
