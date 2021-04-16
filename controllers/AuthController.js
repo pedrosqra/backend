@@ -8,14 +8,15 @@ module.exports = {
   async createUser(req, res) {
     //Validation
     const { error } = register.validate(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
+    if (error) return res.status(400).send({ error: error.details[0].message });
 
     //Get user data
     const { nickname, email, password } = req.body;
 
     //Check if user already exists
     const emailExist = await User.findOne({ email: email });
-    if (emailExist) return res.status(400).send("Email already exists");
+    if (emailExist)
+      return res.status(400).send({ error: "Email already exists" });
 
     //Hash password
     const salt = await bcrypt.genSalt(10);
@@ -31,7 +32,7 @@ module.exports = {
       const savedUser = await user.save();
       res.status(200).send({ user: user.id });
     } catch (err) {
-      res.status(400).send(err);
+      res.status(400).send({ error: err });
     }
   },
 
@@ -55,6 +56,6 @@ module.exports = {
 
     //Create and assign a token
     const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET);
-    res.header("auth", token).send(token);
+    res.header("auth", token).send({ token: token });
   },
 };
