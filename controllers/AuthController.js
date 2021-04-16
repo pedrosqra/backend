@@ -86,7 +86,7 @@ module.exports = {
   },
 
   async logoutUser(req, res) {
-    const token = req.header.auth;
+    const token = req.headers.auth;
 
     out.push(token);
 
