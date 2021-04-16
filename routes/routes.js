@@ -5,7 +5,7 @@ const tokenAuth = require("../validation/tokenVerification");
 
 //Tasks routes
 router.post("/task", tokenAuth, TaskController.createTask);
-router.patch("/task/:taskId", tokenAuth, TaskController.updateTask);
+router.put("/task/:taskId", tokenAuth, TaskController.updateTask);
 router.get("/tasks", tokenAuth, TaskController.listTasks);
 router.get("/tasks/sorted", tokenAuth, TaskController.sortTasks);
 router.delete("/task/:taskId", tokenAuth, TaskController.deleteTask);

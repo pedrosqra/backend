@@ -49,7 +49,6 @@ describe("insert", () => {
         description: "Achar o One Piece",
       })
       .set("auth", token);
-
     expect(res_create_task.status).toEqual(200);
     expect(res_create_task.body).toStrictEqual({
       __v: 0,
