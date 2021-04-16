@@ -84,6 +84,7 @@ module.exports = {
   async deleteTask(req, res) {
     try {
       const user = await User.findById(req.userId);
+      if (!user) return res.status(400).send({ error: "Usuário não existe." });
       let flag = false;
       user.tasks.forEach((task) => {
         if (task._id == req.params.taskId) {
