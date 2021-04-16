@@ -41,9 +41,43 @@ describe("insert", () => {
       priority: "alta",
       description: "Achar o One Piece"
     }).set('auth', token);
+    
+    const res_create_task2 = await request.post('/task').send({
+      name: "Derrotar Akainu",
+      priority: "baixa",
+      description: "Vingar o Ace"
+    }).set('auth', token);
     expect(res_create_task.status).toEqual(200);
-    expect(res_create_task.body).toStrictEqual({name: "Se Tornar o Rei dos piratas",
-    priority: "alta",
-    description: "Achar o One Piece"});
+    expect(res_create_task.body).toStrictEqual({
+      name: "Se Tornar o Rei dos piratas",
+      priority: "alta",
+      description: "Achar o One Piece"
+    });
   });
+  it('list tasks', async () => {
+    const res_list_task = await request.get('/tasks').set('auth', token);
+    expect(res_list_task.status).toEqual(200);
+    expect([{
+      name: "Se Tornar o Rei dos piratas",
+      priority: "alta",
+      description: "Achar o One Piece"
+    }, {
+      name: "Derrotar Akainu",
+      priority: "baixa",
+      description: "Vingar o Ace"
+    }]).toStrictEqual([{
+      name: "Se Tornar o Rei dos piratas",
+      priority: "alta",
+      description: "Achar o One Piece"
+    }, {
+      name: "Derrotar Akainu",
+      priority: "baixa",
+      description: "Vingar o Ace"
+    }]);
+  });
+
+  // it('sort tasks', async () => {
+  //   const res_list_task
+  // })
+  
 });
