@@ -173,4 +173,8 @@ describe("insert", () => {
     }]);
   })
   
+  it('delete task', async () => {
+    const res_delete_task = await request.delete('/task/' + taskId).set('auth', token);
+    expect(res_delete_task.status).toBe(200);
+  })
 });
